@@ -1,5 +1,5 @@
 
-<h1 align="center">Poke`dex</h1>
+<h1 align="center">Pokédex </h1>
 
 An Android application implemented using the MVVM pattern, Coroutines Flow, StateFlow, Retrofit, Dagger-Hilt, ViewModel, Compose Navigation, Coil and some other libraries.
 The app fetches data from the [Poke API](https://pokeapi.co/) to provide pokemon informations.
