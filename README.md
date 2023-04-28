@@ -1,7 +1,8 @@
 
 <h1 align="center">Pokedex</h1>
 
-An Android  application implemented using the MVVM pattern, Coroutines Flow, StateFlow, Retrofit, Dagger-Hilt, ViewModel, Navigation Component, View Binding and some other libraries. The app fetches data from the [Poke API](https://pokeapi.co/) to provide pokemon informations.
+An Android application implemented using the MVVM pattern, Coroutines Flow, StateFlow, Retrofit, Dagger-Hilt, ViewModel, Compose Navigation, Coil and some other libraries.
+The app fetches data from the [Poke API](https://pokeapi.co/) to provide pokemon informations.
 
 ## Built With: 
 * [Kotlin](https://kotlinlang.org/) First class and official programming language for Android development.
