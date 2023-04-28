@@ -1,5 +1,8 @@
 package com.fyp.pokedex.models.pokemon
 
+import com.google.gson.annotations.SerializedName
+
 data class GenerationV(
-    val black-white: BlackWhite
+    @SerializedName("black-white")
+    val blackWhite: BlackWhite
 )
