@@ -2,10 +2,8 @@ package com.fyp.pokedex.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,7 +14,6 @@ import com.fyp.pokedex.navigation.Screen
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -32,8 +29,9 @@ fun HomeScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.padding(vertical = 24.dp))
             Text(
                 modifier = Modifier.clickable {
-                    // "Navigate to detail s
-                    navController.navigate(Screen.Detail.route)
+                    // "Navigate to detail screen
+                    // first pass color , then name
+                    navController.navigate(Screen.Detail.withArgs("0", "mom"))
                 },
                 text = "-->",
                 fontSize = 32.sp,
