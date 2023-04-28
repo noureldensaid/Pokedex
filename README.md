@@ -19,24 +19,3 @@ An Android  application implemented using the MVVM pattern, Coroutines Flow, Sta
 * [View Binding](https://developer.android.com/topic/libraries/view-binding) Generates a binding class for each XML layout file present in that module and allows you to more easily write code that interacts with views.
 * [Coil](https://github.com/coil-kt/coil) An image loading library for Android backed by Kotlin Coroutines.
 
-### TODO
-- [ ] Room database implementation
-- [ ] Add test cases 
-
-## LICENSE
-```
-
-Copyright (C) 2020 Emre Köse
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not
-use this file except in compliance with the License. You may obtain a copy of
-the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-License for the specific language governing permissions and limitations under
-the License..
-```
