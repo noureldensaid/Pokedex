@@ -163,7 +163,14 @@ fun PokemonItem(
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
+                onSuccess = { success ->
+                    val drawable = success.result.drawable
+                    viewModel.calculateDominateColor(drawable) { color ->
+                        dominantColor = color
+                    }
+                }
             )
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = entry.pokemonName,
                 fontSize = 20.sp,
