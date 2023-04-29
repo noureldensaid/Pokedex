@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.ColorUtils
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -35,6 +36,8 @@ import coil.request.ImageRequest
 import com.fyp.pokedex.R
 import com.fyp.pokedex.models.pokemonList.PokedexListEntry
 import com.fyp.pokedex.navigation.Screen
+import com.fyp.pokedex.ui.theme.LightBlue
+import com.fyp.pokedex.ui.theme.RobotoCondensed
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -123,14 +126,12 @@ fun RetrySection(
 
 @Composable
 fun PokemonItem(
-
     entry: PokedexListEntry,
     navController: NavHostController,
-    modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     // theme color
-    val defaultDominantColor = MaterialTheme.colors.surface
+    val defaultDominantColor = MaterialTheme.colors.background
     var dominantColor by remember { mutableStateOf(defaultDominantColor) }
 
 
@@ -146,8 +147,7 @@ fun PokemonItem(
             AsyncImage(
                 modifier = Modifier
                     .fillMaxSize()
-                    .shadow(10.dp, RoundedCornerShape(300.dp))
-                    .clip(RoundedCornerShape(300.dp))
+                    .clip(RoundedCornerShape(50.dp))
                     .aspectRatio(1f)
                     .background(Brush.verticalGradient(listOf(dominantColor, defaultDominantColor)))
                     .clickable {
@@ -170,13 +170,14 @@ fun PokemonItem(
                     }
                 }
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = entry.pokemonName,
                 fontSize = 20.sp,
+                fontFamily = RobotoCondensed,
+                color = MaterialTheme.colors.secondary,
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
@@ -197,15 +198,16 @@ fun SearchBar(
     Box(
         modifier = modifier
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(32.dp))
-            .background(Color.White, RoundedCornerShape(32.dp))
+            .background(MaterialTheme.colors.surface, RoundedCornerShape(32.dp))
             .fillMaxWidth(),
         contentAlignment = Alignment.CenterStart
     ) {
         // The Icon composable displays the search icon on the left side of the search bar
         Icon(
             imageVector = icon,
+            tint = MaterialTheme.colors.onBackground,
             contentDescription = "Search",
-            modifier = Modifier.padding(start = 16.dp)
+            modifier = Modifier.padding(start = 24.dp)
         )
         // The TextField composable is used to allow the user to enter search text
         TextField(
@@ -224,11 +226,19 @@ fun SearchBar(
                 onSearch(it)
             },
             // Use the hint text as the placeholder for the TextField
-            placeholder = { Text(hint) },
+            placeholder = {
+                Text(
+                    text = hint,
+                    color = MaterialTheme.colors.onBackground,
+                    fontSize = 20.sp,
+                    fontFamily = RobotoCondensed,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            },
             // Ensure that the TextField only allows a single line of text
             singleLine = true,
             // Set the text color of the TextField to black
-            textStyle = MaterialTheme.typography.body1.copy(color = Color.Black),
+            textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.primary),
             // Use transparent colors for the TextField background and indicators
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.Transparent,

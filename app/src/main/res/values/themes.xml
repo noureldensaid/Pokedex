@@ -4,5 +4,5 @@
     <style name="Theme.Pokedex" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">#BAC7FF</item>
         <item name="android:windowLightStatusBar">true</item>
-     </style>
+    </style>
 </resources>

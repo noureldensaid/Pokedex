@@ -17,6 +17,7 @@ val SpDefColor = Color(1f, 0f, 0.8f, 0.7f)
 val SpdColor = Color(0f, 1f, 0.063f, 0.55f)
 
 val TypeNormal = Color(0xFFA8A77A)
+val searchColor = Color(0xFFc7a008)
 val TypeFire = Color(0xFFEE8130)
 val TypeWater = Color(0xFF6390F0)
 val TypeElectric = Color(0xFFF7D02C)
