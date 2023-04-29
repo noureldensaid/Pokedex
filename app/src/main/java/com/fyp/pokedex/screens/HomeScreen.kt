@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
- import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -135,43 +134,44 @@ fun PokemonItem(
     var dominantColor by remember { mutableStateOf(defaultDominantColor) }
 
 
-    Box(
-        contentAlignment = Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .shadow(10.dp, RoundedCornerShape(300.dp))
-            .clip(RoundedCornerShape(300.dp))
-            .aspectRatio(1f)
-            .background(Brush.verticalGradient(listOf(dominantColor, defaultDominantColor)))
-            .clickable {
-                navController.navigate(
-                    Screen.Detail.withArgs(
-                        "${dominantColor.toArgb()}", entry.pokemonName
-                    )
-                )
-            }
+    Card(
+        elevation = 0.dp,
+        backgroundColor = MaterialTheme.colors.background
     ) {
-        Column {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             // image
             AsyncImage(
                 modifier = Modifier
                     .fillMaxSize()
+                    .shadow(10.dp, RoundedCornerShape(300.dp))
+                    .clip(RoundedCornerShape(300.dp))
+                    .aspectRatio(1f)
+                    .background(Brush.verticalGradient(listOf(dominantColor, defaultDominantColor)))
+                    .clickable {
+                        navController.navigate(
+                            Screen.Detail.withArgs(
+                                "${dominantColor.toArgb()}", entry.pokemonName
+                            )
+                        )
+                    }
                     .padding(8.dp),
-
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(entry.imgUrl)
                     .crossfade(true)
                     .build(),
                 contentDescription = null,
             )
-
+            Text(
+                text = entry.pokemonName,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
         }
-        Text(
-            text = entry.pokemonName,
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().align(BottomCenter)
-        )
     }
 }
 
