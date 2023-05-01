@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,12 +41,13 @@ import coil.request.ImageRequest
 import com.fyp.pokedex.R
 import com.fyp.pokedex.models.pokemonList.PokedexListEntry
 import com.fyp.pokedex.navigation.Screen
-import com.fyp.pokedex.ui.theme.RobotoCondensed
+import com.fyp.pokedex.ui.theme.poky
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
-    val viewModel = hiltViewModel<HomeViewModel>()
-
+    val viewModel = hiltViewModel<HomeScreenViewModel>()
+    var isSearchActive by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -53,29 +55,36 @@ fun HomeScreen(navController: NavHostController) {
         color = MaterialTheme.colors.background
     ) {
         var hideKeyboard by remember { mutableStateOf(false) }
-             Column(
-                modifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) { hideKeyboard = true },
+        Column(
+            modifier = Modifier.clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+            ) { hideKeyboard = true },
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Image(
+                painter = painterResource(id = R.drawable.ic_international_pok_mon_logo),
+                contentDescription = "",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(CenterHorizontally)
+            )
+            SearchBar(
+                modifier = Modifier.padding(16.dp),
+                hint = "Search..",
+                icon = Icons.Filled.Search,
+                hideKeyboard = hideKeyboard,
+                onFocusClear = {
+                    hideKeyboard = false
+                    isSearchActive = false
+                },
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.ic_international_pok_mon_logo),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(CenterHorizontally)
-                )
-                SearchBar(
-                    modifier = Modifier.padding(16.dp),
-                    hint = "Search..",
-                    icon = Icons.Filled.Search,
-                    hideKeyboard = hideKeyboard,
-                    onFocusClear = { hideKeyboard = false },
-                ) {}
-                PokemonList(navController)
+                searchQuery = it
+                isSearchActive = true
+                viewModel.getPokemonInfo(searchQuery)
             }
+            PokemonList(navController, isSearchActive, searchQuery)
+        }
 
     }
 }
@@ -84,12 +93,17 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun PokemonList(
     navController: NavHostController,
-    viewModel: HomeViewModel = hiltViewModel()
+    isSearchActive: Boolean = false,
+    query: String,
+    viewModel: HomeScreenViewModel = hiltViewModel(),
 ) {
-    val pokemonList by remember { viewModel.pokemonList }
-    val endReached by remember { viewModel.endReached }
-    val loadError by remember { viewModel.loadError }
-    val isLoading by remember { viewModel.isLoading }
+    var data = viewModel.pokemonList
+    if (isSearchActive) {
+        data = listOf(viewModel.pokemonSearchResults.value)
+    }
+    val endReached = viewModel.endReached
+    val loadError = viewModel.loadError
+    val isLoading = viewModel.isLoading
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -97,10 +111,9 @@ fun PokemonList(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(16.dp)
     ) {
-        val itemCount = pokemonList.size
+        val itemCount = data.size
         items(itemCount) { index ->
-            PokemonItem(entry = pokemonList[index], navController = navController)
-
+            PokemonItem(entry = data[index], navController = navController)
             if (index >= itemCount - 1 && !endReached && !isLoading) {
                 viewModel.getPokemonList()
             }
@@ -111,12 +124,17 @@ fun PokemonList(
         contentAlignment = Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        if (isLoading) {
+        if (isLoading && !isSearchActive) {
             CircularProgressIndicator(color = MaterialTheme.colors.primary)
         }
         if (loadError.isNotEmpty()) {
             RetrySection(error = loadError) {
                 viewModel.getPokemonList()
+            }
+        }
+        if (loadError.isNotEmpty()) {
+            RetrySection(error = loadError) {
+                viewModel.getPokemonInfo(query)
             }
         }
     }
@@ -144,7 +162,7 @@ fun RetrySection(
 fun PokemonItem(
     entry: PokedexListEntry,
     navController: NavHostController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     // theme color
     val defaultDominantColor = MaterialTheme.colors.background
@@ -190,7 +208,9 @@ fun PokemonItem(
             Text(
                 text = entry.pokemonName,
                 fontSize = 20.sp,
-                fontFamily = RobotoCondensed,
+                fontFamily = poky,
+                fontWeight = FontWeight.Light,
+                letterSpacing = 1.sp,
                 color = MaterialTheme.colors.secondary,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
@@ -244,7 +264,7 @@ fun SearchBar(
             onValueChange = {
                 searchText = it
                 // Call the onSearch lambda with the current search text whenever it changes
-                onSearch(it)
+//                onSearch(searchText)
             },
             // Use the hint text as the placeholder for the TextField
             placeholder = {
@@ -252,7 +272,9 @@ fun SearchBar(
                     text = hint,
                     color = MaterialTheme.colors.onBackground,
                     fontSize = 20.sp,
-                    fontFamily = RobotoCondensed,
+                    fontFamily = poky,
+                    letterSpacing = 1.sp,
+                    fontWeight = FontWeight.Light,
                 )
             },
             // Ensure that the TextField only allows a single line of text
@@ -261,7 +283,9 @@ fun SearchBar(
             textStyle = MaterialTheme.typography.body1.copy(
                 color = MaterialTheme.colors.onBackground,
                 fontSize = 20.sp,
-                fontFamily = RobotoCondensed
+                fontFamily = poky,
+                letterSpacing = 1.sp,
+                fontWeight = FontWeight.Light,
             ),
 
             // Use transparent colors for the TextField background and indicators

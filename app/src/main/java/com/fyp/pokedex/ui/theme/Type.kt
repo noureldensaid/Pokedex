@@ -21,10 +21,14 @@ val RobotoCondensed = FontFamily(
     Font(R.font.roboto_condensed_regular, FontWeight.Normal),
 )
 
+val poky = FontFamily(
+    Font(R.font.poky)
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     body1 = TextStyle(
-        fontFamily = Roboto,
+        fontFamily = poky,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     ),

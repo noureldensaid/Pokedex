@@ -4,7 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,16 +20,17 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeScreenViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
 
     private var curPage = 0
-    var pokemonList = mutableStateOf<List<PokedexListEntry>>(listOf())
-    var loadError = mutableStateOf("")
-    var isLoading = mutableStateOf(false)
-    var endReached = mutableStateOf(false)
+    var pokemonList by mutableStateOf<List<PokedexListEntry>>(listOf())
+    var pokemonSearchResults = mutableStateOf<PokedexListEntry>(PokedexListEntry("", "", 0))
+    var loadError by mutableStateOf("")
+    var isLoading by mutableStateOf(false)
+    var endReached by mutableStateOf(false)
 
     init {
         getPokemonList()
@@ -35,11 +38,11 @@ class HomeViewModel @Inject constructor(
 
     fun getPokemonList() {
         viewModelScope.launch {
-            isLoading.value = true
+            isLoading = true
             val result = repository.getPokemonList(20, curPage * 20)
             when (result) {
                 is Resource.Success -> {
-                    endReached.value = curPage * 20 >= result.data!!.count
+                    endReached = curPage * 20 >= result.data!!.count
                     val pokedexEntries = result.data.results.mapIndexed { index, entry ->
                         val number = if (entry.url.endsWith("/")) {
                             entry.url.dropLast(1).takeLastWhile { it.isDigit() }
@@ -51,14 +54,14 @@ class HomeViewModel @Inject constructor(
                         PokedexListEntry(entry.name.capitalize(Locale.ROOT), url, number.toInt())
                     }
                     curPage++
-                    loadError.value = ""
-                    isLoading.value = false
-                    pokemonList.value += pokedexEntries
-                    Log.e("DATA", "getPokemonList: ${pokemonList.value.size}")
+                    loadError = ""
+                    isLoading = false
+                    pokemonList += pokedexEntries
+                    Log.e("DATA", "getPokemonList: ${pokemonList.size}")
                 }
                 is Resource.Error -> {
-                    loadError.value = result.message!!
-                    isLoading.value = false
+                    loadError = result.message!!
+                    isLoading = false
                 }
                 else -> {}
             }
@@ -76,5 +79,33 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+
+
+      fun getPokemonInfo(name: String) {
+        viewModelScope.launch {
+            isLoading = true
+            val result = repository.getPokemonInfo(name)
+            when (result) {
+                is Resource.Success -> {
+                    val pokemonInfo = result.data
+                    if (pokemonInfo != null) {
+                        pokemonSearchResults.value = PokedexListEntry(
+                            pokemonInfo.name,
+                            pokemonInfo.sprites.front_shiny,
+                            pokemonInfo.order
+                        )
+                    }
+                    loadError = ""
+                    isLoading = false
+                    Log.e("DATA", "getPokemonList: ${pokemonList.size}")
+                }
+                is Resource.Error -> {
+                    loadError = result.message!!
+                    isLoading = false
+                }
+                else -> {}
+            }
+        }
+    }
 
 }
