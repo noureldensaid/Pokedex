@@ -3,10 +3,13 @@ package com.fyp.pokedex.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -22,12 +25,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.ColorUtils
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -36,30 +40,42 @@ import coil.request.ImageRequest
 import com.fyp.pokedex.R
 import com.fyp.pokedex.models.pokemonList.PokedexListEntry
 import com.fyp.pokedex.navigation.Screen
-import com.fyp.pokedex.ui.theme.LightBlue
 import com.fyp.pokedex.ui.theme.RobotoCondensed
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val viewModel = hiltViewModel<HomeViewModel>()
+
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
+
         color = MaterialTheme.colors.background
     ) {
-        Column {
-            Spacer(modifier = Modifier.height(16.dp))
-            Image(
-                painter = painterResource(id = R.drawable.ic_international_pok_mon_logo),
-                contentDescription = "",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(CenterHorizontally)
-            )
-            SearchBar(modifier = Modifier.padding(16.dp)) {
-                // Call the onSearch from view model
+        var hideKeyboard by remember { mutableStateOf(false) }
+             Column(
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) { hideKeyboard = true },
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.ic_international_pok_mon_logo),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(CenterHorizontally)
+                )
+                SearchBar(
+                    modifier = Modifier.padding(16.dp),
+                    hint = "Search..",
+                    icon = Icons.Filled.Search,
+                    hideKeyboard = hideKeyboard,
+                    onFocusClear = { hideKeyboard = false },
+                ) {}
+                PokemonList(navController)
             }
-            PokemonList(navController)
-        }
 
     }
 }
@@ -73,7 +89,7 @@ fun PokemonList(
     val pokemonList by remember { viewModel.pokemonList }
     val endReached by remember { viewModel.endReached }
     val loadError by remember { viewModel.loadError }
-    val isLoading = remember { viewModel.isLoading }
+    val isLoading by remember { viewModel.isLoading }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -85,7 +101,7 @@ fun PokemonList(
         items(itemCount) { index ->
             PokemonItem(entry = pokemonList[index], navController = navController)
 
-            if (index >= itemCount - 1 && !endReached) {
+            if (index >= itemCount - 1 && !endReached && !isLoading) {
                 viewModel.getPokemonList()
             }
         }
@@ -95,7 +111,7 @@ fun PokemonList(
         contentAlignment = Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        if (isLoading.value) {
+        if (isLoading) {
             CircularProgressIndicator(color = MaterialTheme.colors.primary)
         }
         if (loadError.isNotEmpty()) {
@@ -189,10 +205,13 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     hint: String = "Search..",
     icon: ImageVector = Icons.Filled.Search,
+    hideKeyboard: Boolean = false,
+    onFocusClear: () -> Unit = {},
     onSearch: (String) -> Unit
 ) {
     // This state variable holds the current search text entered by the user
     var searchText by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
     // The Box composable is used to hold the icon and TextField components
     Box(
@@ -203,22 +222,24 @@ fun SearchBar(
         contentAlignment = Alignment.CenterStart
     ) {
         // The Icon composable displays the search icon on the left side of the search bar
-        Icon(
-            imageVector = icon,
-            tint = MaterialTheme.colors.onBackground,
-            contentDescription = "Search",
-            modifier = Modifier.padding(start = 24.dp)
-        )
+
         // The TextField composable is used to allow the user to enter search text
         TextField(
             modifier = Modifier
                 // Fill the available width of the Box with the TextField
                 .fillMaxWidth()
                 // Add some padding to the left of the TextField to make room for the icon
-                .padding(start = 32.dp),
+                .padding(start = 16.dp),
 
             // Bind the value of the TextField to the searchText state variable
             value = searchText,
+            leadingIcon = {
+                Icon(
+                    imageVector = icon,
+                    tint = MaterialTheme.colors.onBackground,
+                    contentDescription = "null",
+                )
+            },
             // Update the searchText state variable as the user types
             onValueChange = {
                 searchText = it
@@ -232,20 +253,38 @@ fun SearchBar(
                     color = MaterialTheme.colors.onBackground,
                     fontSize = 20.sp,
                     fontFamily = RobotoCondensed,
-                    modifier = Modifier.padding(start = 16.dp)
                 )
             },
             // Ensure that the TextField only allows a single line of text
             singleLine = true,
             // Set the text color of the TextField to black
-            textStyle = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.primary),
+            textStyle = MaterialTheme.typography.body1.copy(
+                color = MaterialTheme.colors.onBackground,
+                fontSize = 20.sp,
+                fontFamily = RobotoCondensed
+            ),
+
             // Use transparent colors for the TextField background and indicators
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
+            ),
+
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = {
+                focusManager.clearFocus()
+                onSearch(searchText)
+            }),
+
+
             )
-        )
+
+    }
+    if (hideKeyboard) {
+        focusManager.clearFocus()
+        // Call onFocusClear to reset hideKeyboard state to false
+        onFocusClear()
     }
 }
 
