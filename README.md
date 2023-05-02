@@ -20,4 +20,4 @@ The app fetches data from the [Poke API](https://pokeapi.co/) to provide pokemon
 * [View Binding](https://developer.android.com/topic/libraries/view-binding) Generates a binding class for each XML layout file present in that module and allows you to more easily write code that interacts with views.
 * [Coil](https://github.com/coil-kt/coil) An image loading library for Android backed by Kotlin Coroutines.
 
- <img src="https://user-images.githubusercontent.com/93207605/235676420-e4d41dfb-c252-4271-aa4d-cffe66a860d2.gif" hieght="350" width="300">
+ <img src="https://user-images.githubusercontent.com/93207605/235676420-e4d41dfb-c252-4271-aa4d-cffe66a860d2.gif" hieght="1000" width="1000">
