@@ -74,7 +74,7 @@ fun DetailScreen(
             pokemonInfo = pokemonInfo,
             modifier = Modifier
                 .padding(
-                    top = 300.dp,
+                    top = 250.dp,
                     start = 16.dp,
                     end = 16.dp,
                 )
@@ -135,10 +135,10 @@ fun PokemonDetailTopSection(
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(it.front_default)
+                        .size(600)
                         .crossfade(true)
                         .build(),
                     modifier = Modifier
-                        .size(600.dp)
                         .fillMaxSize()
                         .align(Alignment.BottomCenter),
 //                        .offset(y = 30.dp),
@@ -161,7 +161,7 @@ fun PokemonDetailStateWrapper(
             PokemonDetail(
                 pokemonInfo = pokemonInfo.data!!,
                 modifier = modifier
-                    .offset(y = (-20).dp)
+//                    .offset(y = (-10).dp)
             )
         }
         is Resource.Error -> {

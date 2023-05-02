@@ -6,13 +6,15 @@ import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.fyp.pokedex.screens.DetailScreen
 import com.fyp.pokedex.screens.HomeScreen
+import com.fyp.pokedex.screens.SplashScreen
 
 fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
     navigation(
         route = Graph.Main,
-        startDestination = Screen.Home.route
+        startDestination = Screen.SplashScreen.route
     ) {
         // ADD MAIN SCREENS
+        composable(route = Screen.SplashScreen.route) { SplashScreen(navController) }
         composable(route = Screen.Home.route) { HomeScreen(navController) }
         composable(
             route = Screen.Detail.route + "/{dominantColor}" + "/{name}",
