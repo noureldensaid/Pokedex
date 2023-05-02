@@ -229,11 +229,8 @@ fun SearchBar(
     onFocusClear: () -> Unit = {},
     onSearch: (String) -> Unit
 ) {
-    // This state variable holds the current search text entered by the user
     var searchText by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
-
-    // The Box composable is used to hold the icon and TextField components
     Box(
         modifier = modifier
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(32.dp))
@@ -241,17 +238,10 @@ fun SearchBar(
             .fillMaxWidth(),
         contentAlignment = Alignment.CenterStart
     ) {
-        // The Icon composable displays the search icon on the left side of the search bar
-
-        // The TextField composable is used to allow the user to enter search text
         TextField(
             modifier = Modifier
-                // Fill the available width of the Box with the TextField
                 .fillMaxWidth()
-                // Add some padding to the left of the TextField to make room for the icon
                 .padding(start = 16.dp),
-
-            // Bind the value of the TextField to the searchText state variable
             value = searchText,
             leadingIcon = {
                 Icon(
@@ -260,12 +250,7 @@ fun SearchBar(
                     contentDescription = "null",
                 )
             },
-            // Update the searchText state variable as the user types
-            onValueChange = {
-                searchText = it
-                // Call the onSearch lambda with the current search text whenever it changes
-//                onSearch(searchText)
-            },
+            onValueChange = { searchText = it },
             // Use the hint text as the placeholder for the TextField
             placeholder = {
                 Text(
@@ -277,7 +262,6 @@ fun SearchBar(
                     fontWeight = FontWeight.Light,
                 )
             },
-            // Ensure that the TextField only allows a single line of text
             singleLine = true,
             // Set the text color of the TextField to black
             textStyle = MaterialTheme.typography.body1.copy(
@@ -287,23 +271,18 @@ fun SearchBar(
                 letterSpacing = 1.sp,
                 fontWeight = FontWeight.Light,
             ),
-
             // Use transparent colors for the TextField background and indicators
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = {
                 focusManager.clearFocus()
                 onSearch(searchText)
             }),
-
-
-            )
-
+        )
     }
     if (hideKeyboard) {
         focusManager.clearFocus()

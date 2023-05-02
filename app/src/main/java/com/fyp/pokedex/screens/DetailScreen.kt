@@ -89,10 +89,7 @@ fun DetailScreen(
                     end = 16.dp,
                 )
         )
-
     }
-
-
 }
 
 @Composable

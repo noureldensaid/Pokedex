@@ -25,6 +25,7 @@ class HomeScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
 
+
     private var curPage = 0
     var pokemonList by mutableStateOf<List<PokedexListEntry>>(listOf())
     var pokemonSearchResults = mutableStateOf<PokedexListEntry>(PokedexListEntry("", "", 0))
@@ -79,9 +80,7 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-
-
-      fun getPokemonInfo(name: String) {
+    fun getPokemonInfo(name: String) {
         viewModelScope.launch {
             isLoading = true
             val result = repository.getPokemonInfo(name)
