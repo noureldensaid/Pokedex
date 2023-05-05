@@ -13,11 +13,10 @@ The app fetches data from the [Poke API](https://pokeapi.co/) to provide pokemon
 * [Retrofit](https://square.github.io/retrofit/)  A type-safe HTTP client for Android and Java.
 * [OkHttp](https://github.com/square/okhttp) for HTTP and HTTP/2 client
 * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) to store and manage UI-related data in a lifecycle conscious way.
-* [Navigation Component](https://developer.android.com/guide/navigation) to handle all navigations and also passing of data between destinations.
+* [Compose Navigation](https://developer.android.com/guide/navigation) to handle all navigations and also passing of data between destinations.
 * [Material Design](https://material.io/develop/android/docs/getting-started/) Modular and customizable Material Design UI components for Android.
 * [Gradle Kotlin DSL](https://docs.gradle.org/current/userguide/kotlin_dsl.html) provides an alternative syntax to the traditional Groovy DSL with an enhanced editing experience in supported IDEs, with superior content assist, refactoring, documentation, and more.
-* [Moshi](https://github.com/square/moshi) A modern JSON library for Kotlin and Java.
-* [View Binding](https://developer.android.com/topic/libraries/view-binding) Generates a binding class for each XML layout file present in that module and allows you to more easily write code that interacts with views.
+* [GSON](https://square.github.io/retrofit/) A modern JSON library for Kotlin and Java.
 * [Coil](https://github.com/coil-kt/coil) An image loading library for Android backed by Kotlin Coroutines.
 
  <img src="https://user-images.githubusercontent.com/93207605/235676420-e4d41dfb-c252-4271-aa4d-cffe66a860d2.gif" hieght="800" width="800">
